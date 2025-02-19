@@ -1,0 +1,84 @@
+:root {
+  /** Dark red */
+  --murrey-100: hsla(333, 97%, 27%, 1);
+  --murrey-75: hsla(333, 97%, 27%, 0.75);
+  --murrey-50: hsla(333, 97%, 27%, 0.5);
+
+  /** Dark blue */
+  --indigo-dye-100: hsla(198, 82%, 23%, 1);
+  --indigo-dye-75: hsla(198, 82%, 23%, 0.75);
+  --indigo-dye-50: hsla(198, 82%, 23%, 0.5);
+
+  /** Light blue */
+  --process-cyan-100: hsla(193, 99%, 47%, 1);
+  --process-cyan-75: hsla(193, 99%, 47%, 0.75);
+  --process-cyan-50: hsla(193, 99%, 47%, 0.5);
+
+  /** White */
+  --ghost-white-100: hsla(240, 100%, 99%, 1);
+  --ghost-white-75: hsla(240, 100%, 99%, 0.75);
+  --ghost-white-50: hsla(240, 100%, 99%, 0.5);
+
+  /** Black */
+  --rich-black-100: hsla(203, 69%, 5%, 1);
+  --rich-black-75: hsla(203, 69%, 5%, 0.75);
+  --rich-black-50: hsla(203, 69%, 5%, 0.5);
+}
+
+* {
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  font-size: 10px;
+}
+
+body {
+  color: var(--rich-black-100);
+  background-color: var(--ghost-white-100);
+  font-family: "Montserrat", serif;
+  font-style: normal;
+  font-size: 1.6rem;
+}
+
+.app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.content-container {
+  padding: 3rem;
+}
+
+.app-sidebar {
+  --sidebar-padding: 5rem;
+  background-color: var(--indigo-dye-100);
+  padding: 3rem 0;
+
+  .nav-heading {
+    margin-bottom: 2rem;
+
+    a {
+      color: var(--ghost-white-100);
+      text-decoration: none;
+      padding: 0rem var(--sidebar-padding);
+    }
+  }
+
+  .nav-item a {
+    color: var(--ghost-white-100);
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 1rem var(--sidebar-padding);
+
+    .bx {
+      padding-right: 5px;
+    }
+
+    &:hover {
+      background-color: var(--ghost-white-50);
+    }
+  }
+}
