@@ -5,11 +5,14 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+
+	"github.com/vaskkey/softwarecraft/internal/models"
 )
 
 type application struct {
 	logger        *slog.Logger
 	templateCache templateCache
+	users         *models.UserModel
 }
 
 func main() {
@@ -35,6 +38,7 @@ func main() {
 	app := &application{
 		logger:        logger,
 		templateCache: tc,
+		users:         models.NewUserModel(db),
 	}
 
 	logger.Info("Starting server on", "port", *addr)

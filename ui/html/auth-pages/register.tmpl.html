@@ -1,0 +1,66 @@
+{{define "content"}}
+<section class="form-section">
+  <div class="goto-login">
+    <a href="/login">Log In</a>
+  </div>
+  <div class="form-wrapper">
+    <div class="form-desc">
+      <h2>Create an account</h2>
+      <p>Enter required data to create an account.</p>
+    </div>
+    <form class="input-form" method="POST">
+      <div class="field">
+        <label for="name" class="label">Name</label>
+        <input
+          id="name"
+          type="text"
+          placeholder="Your Name"
+          name="name"
+          {{with .UserParams.Name}} value="{{.}}" {{end}}
+        />
+        {{with .Errs.name}}
+        <label for="name" class="error">{{.}}</label>
+        {{end}}
+      </div>
+      <div class="field">
+        <label for="email" class="label">Email</label>
+        <input
+          id="email"
+          type="email"
+          placeholder="Your Email"
+          name="email"
+          {{with .UserParams.Email}} value="{{.}}" {{end}}
+        />
+        {{with .Errs.email}}
+        <label for="email" class="error">{{.}}</label>
+        {{end}}
+      </div>
+      <div class="field">
+        <label for="password" class="label">Password</label>
+        <input
+          id="password"
+          type="password"
+          placeholder="Your Password"
+          name="password"
+        />
+        {{with .Errs.password}}
+        <label for="password" class="error">{{.}}</label>
+        {{end}}
+      </div>
+      <div class="field">
+        <label for="repeat-password" class="label">Repeat Password</label>
+        <input
+          id="repeat-password"
+          type="password"
+          placeholder="Repeat Your Password"
+          name="repeat_password"
+        />
+        {{with .Errs.repeat_password}}
+        <label for="repeat_password" class="error">{{.}}</label>
+        {{end}}
+      </div>
+      <button type="submit">Sign Up</button>
+    </form>
+  </div>
+</section>
+{{end}}

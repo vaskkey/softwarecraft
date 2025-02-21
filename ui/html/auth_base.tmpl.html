@@ -1,0 +1,43 @@
+{{define "base"}}
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Softwarecraft</title>
+    <!-- CUSTOM STYLES -->
+    <link href="/static/main.css" rel="stylesheet" type="text/css" />
+
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- ICONS -->
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app-container auth-view">
+      <section class="auth-side">
+        <h1>Softwarecraft</h1>
+        <div>
+          <figure>
+            <blockquote>"Very smart quote, from a smart person"</blockquote>
+            <figcaption>Me</figcaption>
+          </figure>
+        </div>
+      </section>
+      <main class="content-container auth-container">{{template "content" .}}</main>
+    </div>
+    <!-- CUSTOM JS -->
+    <script src="/static/index.js" defer></script>
+  </body>
+</html>
+{{end}}

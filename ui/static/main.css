@@ -23,6 +23,7 @@
   --rich-black-100: hsla(203, 69%, 5%, 1);
   --rich-black-75: hsla(203, 69%, 5%, 0.75);
   --rich-black-50: hsla(203, 69%, 5%, 0.5);
+  --rich-black-10: hsla(203, 69%, 5%, 0.1);
 }
 
 * {
@@ -53,7 +54,7 @@ body {
 
 .app-sidebar {
   --sidebar-padding: 5rem;
-  background-color: var(--indigo-dye-100);
+  background-color: var(--rich-black-100);
   padding: 3rem 0;
 
   .nav-heading {
@@ -79,6 +80,112 @@ body {
 
     &:hover {
       background-color: var(--ghost-white-50);
+    }
+  }
+}
+
+.auth-view {
+  .auth-container {
+    width: 50%;
+  }
+
+  .auth-side {
+    color: var(--ghost-white-100);
+    background-color: var(--rich-black-100);
+    padding: 3rem;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .form-section {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .goto-login {
+      display: flex;
+      justify-content: end;
+      width: 100%;
+
+      a {
+        color: var(--rich-black-100);
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .form-wrapper {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .form-desc {
+      margin-bottom: 2rem;
+      text-align: center;
+
+      p {
+        color: var(--rich-black-75);
+      }
+    }
+  }
+}
+
+.input-form {
+  width: 66%;
+
+  .field {
+    margin-bottom: 1rem;
+
+    .label {
+      display: block;
+      margin-bottom: 1rem;
+      font-weight: bold;
+    }
+
+    .error {
+      font-size: 1rem;
+      color: var(--murrey-100);
+    }
+  }
+
+  input {
+    display: block;
+    width: 100%;
+    background-color: var(--ghost-white-100);
+    color: var(--rich-black-100);
+    padding: 1.5rem 1rem;
+    border-radius: 5px;
+    border: none;
+    box-shadow:
+      var(--rich-black-100) 0px 0px 0px 0px,
+      var(--rich-black-100) 0px 0px 0px 0px,
+      var(--rich-black-10) 0px 1px 3px 0px,
+      var(--rich-black-10) 0px 1px 2px -1px;
+
+    &::placeholder {
+      color: var(--rich-black-75);
+    }
+  }
+
+  button {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--indigo-dye-100);
+
+    &:hover {
+      cursor: pointer;
+      background-color: var(--indigo-dye-75);
     }
   }
 }

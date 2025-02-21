@@ -7,8 +7,12 @@ import "net/http"
 func (app *application) routes() http.Handler {
 	mux := http.NewServeMux()
 
+	// Auth routes
+	mux.HandleFunc("GET /register", app.getRegister)
+	mux.HandleFunc("POST /register", app.postRegister)
+
 	// Root page
-	mux.HandleFunc("/{$}", app.getRoot)
+	mux.HandleFunc("GET /{$}", app.getRoot)
 
 	// Serving static files
 	fs := http.FileServer(http.Dir("./ui/static/"))
