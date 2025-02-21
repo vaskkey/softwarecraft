@@ -4,15 +4,15 @@ import (
 	"html/template"
 	"path/filepath"
 
-	"github.com/vaskkey/softwarecraft/internal/config"
+	"github.com/vaskkey/softwarecraft/internal/helpers"
 	"github.com/vaskkey/softwarecraft/internal/models"
 )
 
 type templateCache map[string]*template.Template
 
 type templateData struct {
-	UserParams models.UserParams
-	Errs       config.ValidationErrors
+	UserParams models.RegisterUser
+	Errs       helpers.ValidationErrors
 }
 
 // newTemplateCache parses all files in templates folder and prepares them to be rendered

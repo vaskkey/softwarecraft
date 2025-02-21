@@ -5,11 +5,9 @@ import (
 	"crypto/sha256"
 	"database/sql"
 	"net/url"
-	"strings"
 	"time"
-	"unicode/utf8"
 
-	"github.com/vaskkey/softwarecraft/internal/config"
+	"github.com/vaskkey/softwarecraft/internal/helpers"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -39,25 +37,25 @@ func (p *password) Compare(plainText string) bool {
 
 // User represents a user account in the database.
 type User struct {
-	ID        int64     `json:"id"`
-	Name      string    `json:"name"`
-	Email     string    `json:"email"`
-	Password  password  `json:"-"`
-	Active    bool      `json:"active"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID        int64
+	Name      string
+	Email     string
+	Password  password
+	Active    bool
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
-// UserParams representation of raw values sent from the form
-type UserParams struct {
+// RegisterUser representation of raw values sent from the register form
+type RegisterUser struct {
 	Name           string
 	Email          string
 	Password       string
 	RepeatPassword string
 }
 
-func NewUserParams(form *url.Values) *UserParams {
-	return &UserParams{
+func NewRegisterParams(form *url.Values) *RegisterUser {
+	return &RegisterUser{
 		Name:           form.Get("name"),
 		Email:          form.Get("email"),
 		Password:       form.Get("password"),
@@ -66,50 +64,46 @@ func NewUserParams(form *url.Values) *UserParams {
 }
 
 // Validate validates data sent by the client
-func (up *UserParams) Validate() (bool, config.ValidationErrors) {
-	errors := make(config.ValidationErrors)
+func (ru *RegisterUser) Validate() (bool, helpers.ValidationErrors) {
+	validator := helpers.Validator{}
 
-	if strings.TrimSpace(up.Email) == "" {
-		errors["email"] = "Email is required."
+	validator.CheckField(validator.IsNotBlank(ru.Email), "email", "Email is required.")
+	validator.CheckField(validator.IsNotBlank(ru.Name), "name", "Name is required.")
+	validator.CheckField(validator.IsNotBlank(ru.Password), "password", "Password is required.")
+	validator.CheckField(validator.IsNotBlank(ru.RepeatPassword), "repeat_password", "Repeat Password is required.")
+
+	validator.CheckField(validator.MaxLength(ru.Name, 20), "name", "Name is too long.")
+	validator.CheckField(validator.LengthBetween(ru.Password, 8, 25), "password", "Password should be between 8 and 25 characters.")
+	validator.CheckField(ru.Password == ru.RepeatPassword, "repeat_password", "Passwords must match.")
+
+	return validator.Valid(), validator.Errors
+}
+
+// LoginUser representation of raw values sent from the login form
+type LoginUser struct {
+	Email    string
+	Password string
+}
+
+func NewLoginParams(form *url.Values) *LoginUser {
+	return &LoginUser{
+		Email:    form.Get("email"),
+		Password: form.Get("password"),
 	}
+}
 
-	if strings.TrimSpace(up.Name) == "" {
-		errors["name"] = "Name is required."
-	}
+// Validate validates data sent by the client
+func (lu *LoginUser) Validate() (bool, helpers.ValidationErrors) {
+	validator := helpers.Validator{}
 
-	if up.Password != up.RepeatPassword {
-		errors["repeat_password"] = "Passwords must match."
-	}
+	validator.CheckField(validator.IsNotBlank(lu.Email), "email", "Email is required.")
+	validator.CheckField(validator.IsNotBlank(lu.Password), "password", "Password is required.")
 
-	if strings.TrimSpace(up.Password) == "" {
-		errors["password"] = "Password is required."
-	}
-
-	if strings.TrimSpace(up.RepeatPassword) == "" {
-		errors["repeat_password"] = "Repeat Password is required."
-	}
-
-	if utf8.RuneCountInString(up.Email) > 50 {
-		errors["email"] = "Email is too long."
-	}
-
-	if utf8.RuneCountInString(up.Name) > 20 {
-		errors["user"] = "Name is too long."
-	}
-
-	if utf8.RuneCountInString(up.Password) > 50 {
-		errors["password"] = "Password is too long."
-	}
-
-	if utf8.RuneCountInString(up.RepeatPassword) > 50 {
-		errors["repeat_password"] = "Repeat Password is too long."
-	}
-
-	return len(errors) == 0, errors
+	return validator.Valid(), validator.Errors
 }
 
 // GetUser convert params sent from client to a User record
-func (up *UserParams) GetUser() (*User, error) {
+func (up *RegisterUser) GetUser() (*User, error) {
 	u := &User{
 		Name:      up.Name,
 		Email:     up.Email,
@@ -150,7 +144,7 @@ func (m *UserModel) Insert(u *User) error {
 	if err != nil {
 		switch {
 		case err.Error() == `ERROR: duplicate key value violates unique constraint "users_email_key" (SQLSTATE 23505)`:
-			return config.ErrDuplicateEmail
+			return helpers.ErrDuplicateEmail
 		default:
 			return err
 		}
@@ -196,7 +190,7 @@ func scanUser(row *sql.Row) (User, error) {
 	if err != nil {
 		switch {
 		case err.Error() == "no rows in result set":
-			return u, config.ErrNoRecords
+			return u, helpers.ErrNoRecords
 		default:
 			return u, err
 		}

@@ -11,6 +11,9 @@ func (app *application) routes() http.Handler {
 	mux.HandleFunc("GET /register", app.getRegister)
 	mux.HandleFunc("POST /register", app.postRegister)
 
+	mux.HandleFunc("GET /login", app.getLogin)
+	mux.HandleFunc("POST /login", app.postLogin)
+
 	// Root page
 	mux.HandleFunc("GET /{$}", app.getRoot)
 

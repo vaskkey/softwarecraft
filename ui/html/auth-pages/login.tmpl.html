@@ -1,0 +1,44 @@
+{{define "content"}}
+<section class="form-section">
+  <div class="goto-login">
+    <a href="/register">Register</a>
+  </div>
+  <div class="form-wrapper">
+    {{with .Errs.login}} {{.}} {{end}}
+    <div class="form-desc">
+      <h2>Log In</h2>
+      <p>Enter required data to log in.</p>
+    </div>
+    <form class="input-form" method="POST">
+      <div class="field">
+        <label for="email" class="label">Email</label>
+        <input
+          id="email"
+          type="email"
+          placeholder="Your Email"
+          name="email"
+          {{with .UserParams.Email}}
+          value="{{.}}"
+          {{end}}
+        />
+        {{with .Errs.email}}
+        <label for="email" class="error">{{.}}</label>
+        {{end}}
+      </div>
+      <div class="field">
+        <label for="password" class="label">Password</label>
+        <input
+          id="password"
+          type="password"
+          placeholder="Your Password"
+          name="password"
+        />
+        {{with .Errs.password}}
+        <label for="password" class="error">{{.}}</label>
+        {{end}}
+      </div>
+      <button type="submit">Log In</button>
+    </form>
+  </div>
+</section>
+{{end}}
