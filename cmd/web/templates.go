@@ -14,9 +14,15 @@ type templateData struct {
 	// Toast messages
 	ToastMessage string
 
+	// Auth
+
 	// Form specific data
 	UserParams models.RegisterUser
 	Errs       helpers.ValidationErrors
+}
+
+func (app *application) newTemplateData() templateData {
+	return templateData{}
 }
 
 // newTemplateCache parses all files in templates folder and prepares them to be rendered

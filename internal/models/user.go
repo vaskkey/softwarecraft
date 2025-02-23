@@ -2,7 +2,6 @@ package models
 
 import (
 	"context"
-	"crypto/sha256"
 	"database/sql"
 	"net/url"
 	"time"
@@ -166,22 +165,17 @@ func (m *UserModel) GetByEmail(email string) (User, error) {
 	return scanUser(m.db.QueryRowContext(ctx, query, email))
 }
 
-func (m *UserModel) GetByToken(token string) (User, error) {
-	tokenHash := sha256.Sum256([]byte(token))
-
+func (m *UserModel) GetByID(ID int64) (User, error) {
 	query := `
-		SELECT u.id, u.name, u.email, u.password_hash, u.active, u.created_at, u.updated_at
-		FROM users u
-		INNER JOIN tokens t
-		ON u.id = t.user_id
-		WHERE t.hash = $1
-		AND t.scope = $2
-		AND t.expires_at > $3`
+		SELECT id, name, email, password_hash, active, created_at, updated_at
+		FROM users
+		WHERE id = $1
+	`
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	return scanUser(m.db.QueryRowContext(ctx, query, tokenHash[:], "authentication", time.Now()))
+	return scanUser(m.db.QueryRowContext(ctx, query, ID))
 }
 
 func scanUser(row *sql.Row) (User, error) {

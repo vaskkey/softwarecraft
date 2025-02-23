@@ -23,7 +23,8 @@ func (app *application) routes() http.Handler {
 	mux.Handle("POST /logout", withSession.ThenFunc(app.postLogout))
 
 	// Root page
-	mux.HandleFunc("GET /{$}", app.getRoot)
+	withAuth := withSession.Append(app.authorizedUser)
+	mux.Handle("GET /{$}", withAuth.ThenFunc(app.getRoot))
 
 	// Serving static files
 	fs := http.FileServer(http.Dir("./ui/static/"))
