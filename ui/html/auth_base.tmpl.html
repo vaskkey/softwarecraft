@@ -34,8 +34,15 @@
           </figure>
         </div>
       </section>
-      <main class="content-container auth-container">{{template "content" .}}</main>
+      <main class="content-container auth-container">
+        {{template "content" .}}
+      </main>
     </div>
+
+    {{with .ToastMessage}}
+    <toast-message data-message="{{.}}"></toast-message>
+    {{end}}
+
     <!-- CUSTOM JS -->
     <script src="/static/index.js" defer></script>
   </body>

@@ -28,6 +28,11 @@
       {{template "sidebar" .}}
       <main class="content-container">{{template "content" .}}</main>
     </div>
+
+    {{with .ToastMessage}}
+    <toast-message data-message="{{.}}"></toast-message>
+    {{end}}
+
     <!-- CUSTOM JS -->
     <script src="/static/index.js" defer></script>
   </body>

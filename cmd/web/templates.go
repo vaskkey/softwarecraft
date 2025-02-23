@@ -11,6 +11,10 @@ import (
 type templateCache map[string]*template.Template
 
 type templateData struct {
+	// Toast messages
+	ToastMessage string
+
+	// Form specific data
 	UserParams models.RegisterUser
 	Errs       helpers.ValidationErrors
 }

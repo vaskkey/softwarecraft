@@ -59,15 +59,17 @@ func (app *application) postRegister(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	app.sessionManager.Put(r.Context(), "toast", "Successfully created new user.")
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
 
 // getLogin renders login page
 func (app *application) getLogin(w http.ResponseWriter, r *http.Request) {
-	app.render(w, r, http.StatusOK, "login.tmpl.html", templateData{})
+	toast := app.sessionManager.PopString(r.Context(), "toast")
+	app.render(w, r, http.StatusOK, "login.tmpl.html", templateData{ToastMessage: toast})
 }
 
-// postLogin renders login page
+// postLogin authenticates the user and puts their id in the session
 func (app *application) postLogin(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
@@ -75,14 +77,13 @@ func (app *application) postLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	errs := make(helpers.ValidationErrors)
-	errs["login"] = "Unable to log in."
+	td := templateData{
+		ToastMessage: "Unable to log in.",
+	}
 
 	uParams := models.NewLoginParams(&r.PostForm)
 	if ok, _ := uParams.Validate(); !ok {
-		app.render(w, r, http.StatusUnprocessableEntity, "login.tmpl.html", templateData{
-			Errs: errs,
-		})
+		app.render(w, r, http.StatusUnprocessableEntity, "login.tmpl.html", td)
 		return
 	}
 
@@ -90,9 +91,7 @@ func (app *application) postLogin(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		switch {
 		case errors.Is(err, helpers.ErrNoRecords):
-			app.render(w, r, http.StatusUnprocessableEntity, "login.tmpl.html", templateData{
-				Errs: errs,
-			})
+			app.render(w, r, http.StatusUnprocessableEntity, "login.tmpl.html", td)
 			return
 		default:
 			app.serverError(w, r, err)
@@ -101,11 +100,26 @@ func (app *application) postLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if match := user.Password.Compare(uParams.Password); !match {
-		app.render(w, r, http.StatusUnprocessableEntity, "login.tmpl.html", templateData{
-			Errs: errs,
-		})
+		app.render(w, r, http.StatusUnprocessableEntity, "login.tmpl.html", td)
 		return
 	}
 
+	if err := app.sessionManager.RenewToken(r.Context()); err != nil {
+		app.serverError(w, r, err)
+	}
+
+	app.sessionManager.Put(r.Context(), "userID", user.ID)
+
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+// postLogout authenticates the user and puts their id in the session
+func (app *application) postLogout(w http.ResponseWriter, r *http.Request) {
+	if err := app.sessionManager.RenewToken(r.Context()); err != nil {
+		app.serverError(w, r, err)
+	}
+
+	app.sessionManager.Remove(r.Context(), "userID")
+
+	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
